@@ -102,20 +102,26 @@ class Device(object):
         data = ctypes.create_string_buffer(size)
 
         if timeout is None:
-            size = self.__hidcall(hidapi.hid_read, data, size)
+            size = self.__hidcall(hidapi.hid_read, self.__dev, data, size)
         else:
-            size = self.__hidcall(hidapi.hid_read_timeout, data, size, timeout)
+            size = self.__hidcall(
+                hidapi.hid_read_timeout, self.__dev, data, size, timeout)
 
-        return data.value[:size]
+        return data.raw[:size]
 
     def send_feature_report(self, data):
         return self.__hidcall(hidapi.hid_send_feature_report,
                               self.__dev, data, len(data))
 
-    def get_feature_report(self, size):
+    def get_feature_report(self, report_id, size):
         data = ctypes.create_string_buffer(size)
-        size = self.__hidcall(hidapi.hid_get_feature_report, data, size)
-        return data.value[:size]
+
+        # Pass the id of the report to be read.
+        data[0] = chr(report_id)
+
+        size = self.__hidcall(
+            hidapi.hid_get_feature_report, self.__dev, data, size)
+        return data.raw[:size]
 
     def close(self):
         if self.__dev != 0:
