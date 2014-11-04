@@ -14,8 +14,10 @@ pyhidapi works on OSX, but requires that you first build a shared library.  Ther
 6. Copy the resulting libhidapi-iohidmanager.so to /usr/local/lib (or somewhere in the libs search path)
 7. Install pyhidapi as normal: `python setup.py install`
 8. Verify by running python interactively and typing the following lines:
-```import hid
-hid.enumerate()```
+```
+import hid
+hid.enumerate()
+```
 You should see a list of all USB hid devices on your system.
 
 That's it!
