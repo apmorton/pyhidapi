@@ -9,7 +9,10 @@ except OSError:
     try:
         hidapi = ctypes.cdll.LoadLibrary('libhidapi-libusb.so')
     except OSError:
-            hidapi = ctypes.windll.LoadLibrary('')
+        try:
+            hidapi = ctypes.cdll.LoadLibrary('libhidapi-iohidmanager.so')
+        except OSError:
+                hidapi = ctypes.windll.LoadLibrary('')
 
 hidapi.hid_init()
 atexit.register(hidapi.hid_exit)
