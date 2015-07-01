@@ -7,12 +7,21 @@ try:
     hidapi = ctypes.cdll.LoadLibrary('libhidapi-hidraw.so')
 except OSError:
     try:
-        hidapi = ctypes.cdll.LoadLibrary('libhidapi-libusb.so')
+        hidapi = ctypes.cdll.LoadLibrary('libhidapi-hidraw.so.0')
     except OSError:
         try:
-            hidapi = ctypes.cdll.LoadLibrary('libhidapi-iohidmanager.so')
+            hidapi = ctypes.cdll.LoadLibrary('libhidapi-libusb.so')
         except OSError:
-                hidapi = ctypes.windll.LoadLibrary('')
+            try:
+                hidapi = ctypes.cdll.LoadLibrary('libhidapi-libusb.so.0')
+            except OSError:
+                try:
+                    hidapi = ctypes.cdll.LoadLibrary('libhidapi-iohidmanager.so')
+                except OSError:
+                    try:
+                        hidapi = ctypes.cdll.LoadLibrary('libhidapi-iohidmanager.so.0')
+                    except OSError:
+                            hidapi = ctypes.windll.LoadLibrary('')
 
 hidapi.hid_init()
 atexit.register(hidapi.hid_exit)
