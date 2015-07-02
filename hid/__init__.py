@@ -3,16 +3,26 @@ import atexit
 
 __all__ = ['HIDException', 'DeviceInfo', 'Device', 'enumerate']
 
-try:
-    hidapi = ctypes.cdll.LoadLibrary('libhidapi-hidraw.so')
-except OSError:
+
+hidapi = None
+library_paths = (
+    'libhidapi-hidraw.so',
+    'libhidapi-hidraw.so.0',
+    'libhidapi-libusb.so',
+    'libhidapi-libusb.so.0',
+    'libhidusb-iohidmanager.so'
+    'libhidusb-iohidmanager.so.0'
+)
+
+for lib in library_paths:
     try:
-        hidapi = ctypes.cdll.LoadLibrary('libhidapi-libusb.so')
+        hidapi = ctypes.cdll.LoadLibrary(lib)
+        break
     except OSError:
-        try:
-            hidapi = ctypes.cdll.LoadLibrary('libhidapi-iohidmanager.so')
-        except OSError:
-                hidapi = ctypes.windll.LoadLibrary('')
+        pass
+else:
+    hidapi = ctypes.windll.LoadLibrary('hidapi.dll')
+
 
 hidapi.hid_init()
 atexit.register(hidapi.hid_exit)
