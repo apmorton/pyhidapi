@@ -21,7 +21,10 @@ for lib in library_paths:
     except OSError:
         pass
 else:
-    hidapi = ctypes.windll.LoadLibrary('hidapi.dll')
+    try:
+        hidapi = ctypes.windll.LoadLibrary('hidapi.dll')
+    except AttributeError:
+        raise ImportError("Unable to load the HIDAPI library")
 
 
 hidapi.hid_init()
