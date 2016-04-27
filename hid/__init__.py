@@ -21,7 +21,10 @@ for lib in library_paths:
     except OSError:
         pass
 else:
-    hidapi = ctypes.windll.LoadLibrary('hidapi.dll')
+    try:
+        hidapi = ctypes.windll.LoadLibrary('hidapi.dll')
+    except AttributeError:
+        raise ImportError("Unable to load the HIDAPI library")
 
 
 hidapi.hid_init()
@@ -77,19 +80,15 @@ def enumerate(vid=0, pid=0):
 class Device(object):
     def __init__(self, vid=None, pid=None, serial=None, path=None):
         if path:
-            print 'opening with path'
             self.__dev = hidapi.hid_open_path(path)
         elif serial:
-            print 'opening with serial'
             serial = ctypes.create_unicode_buffer(serial)
             self.__dev = hidapi.hid_open(vid, pid, serial)
         elif vid and pid:
-            print 'opening with vid/pid'
             self.__dev = hidapi.hid_open(vid, pid, None)
         else:
             raise ValueError('specify vid/pid or path')
 
-        print self.__dev
         if self.__dev == 0:
             raise HIDException('unable to open device')
 
