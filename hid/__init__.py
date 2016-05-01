@@ -11,7 +11,8 @@ library_paths = (
     'libhidapi-libusb.so',
     'libhidapi-libusb.so.0',
     'libhidapi-iohidmanager.so',
-    'libhidapi-iohidmanager.so.0'
+    'libhidapi-iohidmanager.so.0',
+    'hidapi.dll'
 )
 
 for lib in library_paths:
@@ -21,10 +22,7 @@ for lib in library_paths:
     except OSError:
         pass
 else:
-    try:
-        hidapi = ctypes.windll.LoadLibrary('hidapi.dll')
-    except AttributeError:
-        raise ImportError("Unable to load the HIDAPI library")
+    raise ImportError("Unable to load the HIDAPI library")
 
 
 hidapi.hid_init()
