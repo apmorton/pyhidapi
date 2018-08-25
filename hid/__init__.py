@@ -11,7 +11,8 @@ library_paths = (
     'libhidapi-libusb.so',
     'libhidapi-libusb.so.0',
     'libhidapi-iohidmanager.so',
-    'libhidapi-iohidmanager.so.0'
+    'libhidapi-iohidmanager.so.0',
+    'libhidapi.dylib',
 )
 
 for lib in library_paths:
