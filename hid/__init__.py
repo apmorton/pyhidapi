@@ -14,6 +14,7 @@ library_paths = (
     'libhidapi-iohidmanager.so',
     'libhidapi-iohidmanager.so.0',
     'libhidapi.dylib',
+    'hidapi.dll'
 )
 
 for lib in library_paths:
