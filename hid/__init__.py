@@ -132,7 +132,7 @@ class Device(object):
         data = ctypes.create_string_buffer(size)
 
         # Pass the id of the report to be read.
-        data[0] = chr(report_id)
+        data[0] = bytearray((report_id,))
 
         size = self.__hidcall(
             hidapi.hid_get_feature_report, self.__dev, data, size)
