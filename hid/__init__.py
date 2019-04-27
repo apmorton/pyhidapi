@@ -65,6 +65,8 @@ DeviceInfo._fields_ = [
 hidapi.hid_enumerate.restype = ctypes.POINTER(DeviceInfo)
 hidapi.hid_error.restype = ctypes.c_wchar_p
 
+hidapi.hid_open.restype = ctypes.POINTER(ctypes.c_void_p)
+hidapi.hid_open_path.restype = ctypes.POINTER(ctypes.c_void_p)
 
 def enumerate(vid=0, pid=0):
     ret = []
