@@ -176,7 +176,7 @@ class Device(object):
     def close(self):
         if not self.__dev:
             hidapi.hid_close(self.__dev)
-            self.__dev = 0
+            self.__dev = None
 
     @property
     def nonblocking(self):
