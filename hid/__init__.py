@@ -174,7 +174,7 @@ class Device(object):
         return data.raw[:size]
 
     def close(self):
-        if self.__dev != 0:
+        if not self.__dev:
             hidapi.hid_close(self.__dev)
             self.__dev = 0
 
