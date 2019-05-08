@@ -126,11 +126,11 @@ class Device(object):
         else:
             raise ValueError('specify vid/pid or path')
 
-        if self.__dev == 0:
+        if not self.__dev:
             raise HIDException('unable to open device')
 
     def __hidcall(self, function, *args, **kwargs):
-        if self.__dev == 0:
+        if not self.__dev:
             raise HIDException('device closed')
 
         ret = function(*args, **kwargs)
@@ -174,9 +174,9 @@ class Device(object):
         return data.raw[:size]
 
     def close(self):
-        if self.__dev != 0:
+        if not self.__dev:
             hidapi.hid_close(self.__dev)
-            self.__dev = 0
+            self.__dev = None
 
     @property
     def nonblocking(self):
