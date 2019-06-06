@@ -5,13 +5,14 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 
 
-version = '1.0.2'
+version = '1.0.3'
 
 setup(
     name='hid',
     version=version,
     description='ctypes bindings for hidapi',
     long_description=README,
+    long_description_content_type='text/markdown',
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
