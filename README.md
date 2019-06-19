@@ -1,5 +1,10 @@
 # pyhidapi Installation
-To install pyhidapi, use the standard module install procedure: `python setup.py install`.  You also need to ensure that you have the required hidapi shared library.  On Linux distributions, this is generally in the repositories (for instance, under Debian you can install either libhidapi-hidraw0 or libhidapi-libusb0 depending on which backend you want to use).
+You can install pyhidapi [from PyPI](https://pypi.org/project/hid/):
+```
+pip install hid
+```
+
+You also need to ensure that you have the required hidapi shared library. On Linux distributions, this is generally in the repositories (for instance, under Debian/Ubuntu/Linux Mint you can install either libhidapi-hidraw0 or libhidapi-libusb0 depending on which backend you want to use).
 
 **TODO** I don't know the installation procedure for Windows or other Linux distributions.  If there is anything special needed, please add docs for it here.
 
