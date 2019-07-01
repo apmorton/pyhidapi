@@ -1,28 +1,70 @@
-# pyhidapi Installation
-You can install pyhidapi [from PyPI](https://pypi.org/project/hid/):
+# Installing pyhidapi
+pyhidapi is available on [PyPI](https://pypi.org/project/hid/) and can be installed using pip.
 ```
 pip install hid
 ```
 
+pyhidapi is dependant upon the [hidapi library](https://github.com/libusb/hidapi), which must be installed separately.
+
 You also need to ensure that you have the required hidapi shared library. On Linux distributions, this is generally in the repositories (for instance, under Debian/Ubuntu/Linux Mint you can install either libhidapi-hidraw0 or libhidapi-libusb0 depending on which backend you want to use).
 
-Installation procedure for Windows is described in https://github.com/libusb/hidapi#building-on-windows
+# Installing hidapi
 
-# OSX Support
-pyhidapi works on OSX, but requires that you first build a shared library. There may be better ways to do this, but what I did was as follows:
+## Linux
+Installation procedures vary depending on your distribution.
 
-1. Download the latest hidapi release from https://github.com/libusb/hidapi/downloads and unzip
-2. Navigate to the mac directory
-3. Modify the Makefile to include -fPIC on the CFLAGS line.  My CFLAGS now look like this: `CFLAGS+=-I../hidapi -Wall -g -c -fPIC`
-4. Run `make`.  You should now have a hid.o file in this directory.
-5. Create the shared library by running: `gcc -shared -o libhidapi-iohidmanager.so hid.o -framework IOKit -framework CoreFoundation`
-6. Copy the resulting libhidapi-iohidmanager.so to /usr/local/lib (or somewhere in the libs search path)
-7. Install pyhidapi as normal: `python setup.py install`
-8. Verify by running python interactively and typing the following lines:
+### Arch Linux
+Binary distributions are available in the community repository.
+
+1. Enable the community repository in `/etc/pacman.conf`
 ```
-import hid
-hid.enumerate()
+[community]
+Include = /etc/pacman.d/mirrorlist
 ```
-You should see a list of all USB hid devices on your system.
+2. Install hidapi
+```
+pacman -Sy hidapi
+```
 
-That's it!
+### CentOS/RHEL
+Binary distributions are available through [EPEL](https://fedoraproject.org/wiki/EPEL).
+```
+yum install hidapi
+```
+
+### Fedora
+Binary distributions are available.
+```
+dnf install hidapi
+```
+
+### Ubuntu/Debian
+Binary distributions are available.
+
+```
+apt install libhidapi-hidraw0
+```
+or
+```
+apt install libhidapi-libusb0
+```
+
+### Others
+Binary distributions may be available in your package repositories. If not, you can build from source as described [in the libusb/hidapi README](https://github.com/libusb/hidapi#build-instructions).
+
+## Windows
+Installation procedure for Windows is described [in the libusb/hidapi README](https://github.com/libusb/hidapi#building-on-windows)
+
+Binary distributions are provided by [libusb/hidapi](https://github.com/libusb/hidapi/releases)
+
+## OSX
+There are currently no official binary distributions for Mac, so you must build hidapi yourself.
+
+Installation instructions are described [in the libusb/hidapi README](https://github.com/libusb/hidapi#mac)
+
+You can also use brew:
+```
+brew install hidapi
+```
+It should be noted that at this time, brew still uses the old signal11 repository which has long since been abandond.
+See [Homebrew/homebrew-core#41122](https://github.com/Homebrew/homebrew-core/pull/41122).
