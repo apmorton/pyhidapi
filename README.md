@@ -6,8 +6,6 @@ pip install hid
 
 pyhidapi is dependant upon the [hidapi library](https://github.com/libusb/hidapi), which must be installed separately.
 
-You also need to ensure that you have the required hidapi shared library. On Linux distributions, this is generally in the repositories (for instance, under Debian/Ubuntu/Linux Mint you can install either libhidapi-hidraw0 or libhidapi-libusb0 depending on which backend you want to use).
-
 # Installing hidapi
 
 ## Linux
