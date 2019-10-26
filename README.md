@@ -66,3 +66,20 @@ brew install hidapi
 ```
 It should be noted that at this time, brew still uses the old signal11 repository which has long since been abandond.
 See [Homebrew/homebrew-core#41122](https://github.com/Homebrew/homebrew-core/pull/41122).
+
+# Sample usage code
+
+The details about a HID device can be printed with following code:
+
+```python
+import hid
+
+vid = 0x046d	# Change it for your device
+pid = 0xc534	# Change it for your device
+
+with hid.Device(vid, pid) as h:
+	print(f'Device manufacturer: {h.manufacturer}')
+	print(f'Product: {h.product}')
+	print(f'Serial Number: {h.serial}')
+```
+
