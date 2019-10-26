@@ -134,8 +134,6 @@ class Device(object):
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.close()
-        if exc_type:
-            return False
 
     def __hidcall(self, function, *args, **kwargs):
         if not self.__dev:
