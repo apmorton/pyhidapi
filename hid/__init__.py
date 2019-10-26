@@ -129,6 +129,12 @@ class Device(object):
         if not self.__dev:
             raise HIDException('unable to open device')
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.close()
+
     def __hidcall(self, function, *args, **kwargs):
         if not self.__dev:
             raise HIDException('device closed')
