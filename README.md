@@ -64,8 +64,6 @@ You can also use brew:
 ```
 brew install hidapi
 ```
-It should be noted that at this time, brew still uses the old signal11 repository which has long since been abandond.
-See [Homebrew/homebrew-core#41122](https://github.com/Homebrew/homebrew-core/pull/41122).
 
 # Sample usage code
 
