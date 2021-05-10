@@ -65,6 +65,13 @@ You can also use brew:
 brew install hidapi
 ```
 
+## FreeBSD
+
+Binary distributions are available.
+```
+pkg install -g 'py*-hidapi'
+```
+
 # Sample usage code
 
 The details about a HID device can be printed with following code:
