@@ -7,7 +7,7 @@ __all__ = ['HIDException', 'DeviceInfo', 'Device', 'enumerate']
 
 
 hidapi = None
-library_paths = (
+library_names = (
     'libhidapi-hidraw.so',
     'libhidapi-hidraw.so.0',
     'libhidapi-libusb.so',
@@ -19,9 +19,9 @@ library_paths = (
     'libhidapi-0.dll'
 )
 
-for lib in library_paths:
+for libname in library_names:
     try:
-        libpath = ctypes.util.find_library(lib)
+        libpath = ctypes.util.find_library(libname)
         if libpath:
             hidapi = ctypes.cdll.LoadLibrary(libpath)
             break
@@ -29,7 +29,7 @@ for lib in library_paths:
         pass
 else:
     error = "Unable to load any of the following libraries:{}"\
-        .format(' '.join(library_paths))
+        .format(' '.join(library_names))
     raise ImportError(error)
 
 
