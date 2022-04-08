@@ -80,6 +80,8 @@ hidapi.hid_read_timeout.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_s
 hidapi.hid_read_timeout.restype = ctypes.c_int
 hidapi.hid_read.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
 hidapi.hid_read.restype = ctypes.c_int
+hidapi.hid_get_input_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
+hidapi.hid_get_input_report.restype = ctypes.c_int
 hidapi.hid_set_nonblocking.argtypes = [ctypes.c_void_p, ctypes.c_int]
 hidapi.hid_set_nonblocking.restype = ctypes.c_int
 hidapi.hid_send_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
@@ -163,6 +165,16 @@ class Device(object):
             size = self.__hidcall(
                 hidapi.hid_read_timeout, self.__dev, data, size, timeout)
 
+        return data.raw[:size]
+
+    def get_input_report(self, report_id, size):
+        data = ctypes.create_string_buffer(size)
+
+        # Pass the id of the report to be read.
+        data[0] = bytearray((report_id,))
+
+        size = self.__hidcall(
+            hidapi.hid_get_input_report, self.__dev, data, size)
         return data.raw[:size]
 
     def send_feature_report(self, data):
