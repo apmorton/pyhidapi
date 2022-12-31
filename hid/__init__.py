@@ -80,8 +80,11 @@ hidapi.hid_read_timeout.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_s
 hidapi.hid_read_timeout.restype = ctypes.c_int
 hidapi.hid_read.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
 hidapi.hid_read.restype = ctypes.c_int
-hidapi.hid_get_input_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
-hidapi.hid_get_input_report.restype = ctypes.c_int
+try: 
+    hidapi.hid_get_input_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
+    hidapi.hid_get_input_report.restype = ctypes.c_int
+except AttributeError:
+    hidapi.hid_get_input_report = lambda a, b, c: raise Exception("Underlying C hid library does not support hid_get_input_report"
 hidapi.hid_set_nonblocking.argtypes = [ctypes.c_void_p, ctypes.c_int]
 hidapi.hid_set_nonblocking.restype = ctypes.c_int
 hidapi.hid_send_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
