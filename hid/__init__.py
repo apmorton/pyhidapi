@@ -33,6 +33,8 @@ else:
 hidapi.hid_init()
 atexit.register(hidapi.hid_exit)
 
+def not_implemented(*args):
+    raise Exception("Underlying hid library does not support this function")
 
 class HIDException(Exception):
     pass
@@ -84,7 +86,7 @@ try:
     hidapi.hid_get_input_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
     hidapi.hid_get_input_report.restype = ctypes.c_int
 except AttributeError:
-    hidapi.hid_get_input_report = lambda a, b, c: raise Exception("Underlying C hid library does not support hid_get_input_report"
+    hidapi.hid_get_input_report = not_implemented
 hidapi.hid_set_nonblocking.argtypes = [ctypes.c_void_p, ctypes.c_int]
 hidapi.hid_set_nonblocking.restype = ctypes.c_int
 hidapi.hid_send_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
