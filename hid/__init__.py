@@ -1,8 +1,9 @@
 import os
 import ctypes
 import atexit
+import enum
 
-__all__ = ['HIDException', 'DeviceInfo', 'Device', 'enumerate']
+__all__ = ['HIDException', 'DeviceInfo', 'Device', 'enumerate', 'BusType']
 
 
 hidapi = None
@@ -37,6 +38,44 @@ atexit.register(hidapi.hid_exit)
 class HIDException(Exception):
     pass
 
+class APIVersion(ctypes.Structure):
+    _fields_ = [
+        ('major', ctypes.c_int),
+        ('minor', ctypes.c_int),
+        ('patch', ctypes.c_int),
+    ]
+
+try:
+    hidapi.hid_version.argtypes = []
+    hidapi.hid_version.restype = ctypes.POINTER(APIVersion)
+
+    version = hidapi.hid_version()
+    version = (
+        version.contents.major,
+        version.contents.minor,
+        version.contents.patch,
+    )
+except AttributeError:
+    #
+    # hid_version API was added in
+    # https://github.com/libusb/hidapi/commit/8f72236099290345928e646d2f2c48f0187ac4af
+    # so if it is missing we are dealing with hidapi 0.8.0 or older
+    #
+    version = (0, 8, 0)
+
+if version >= (0, 13, 0):
+    bus_type = [
+        ('bus_type', ctypes.c_int),
+    ]
+else:
+    bus_type = []
+
+class BusType(enum.Enum):
+    UNKNOWN = 0x00
+    USB = 0x01
+    BLUETOOTH = 0x02
+    I2C = 0x03
+    SPI = 0x04
 
 class DeviceInfo(ctypes.Structure):
     def as_dict(self):
@@ -45,6 +84,9 @@ class DeviceInfo(ctypes.Structure):
             if name == 'next':
                 continue
             ret[name] = getattr(self, name, None)
+
+            if name == 'bus_type':
+                ret[name] = BusType(ret[name])
 
         return ret
 
@@ -60,7 +102,7 @@ DeviceInfo._fields_ = [
     ('usage', ctypes.c_ushort),
     ('interface_number', ctypes.c_int),
     ('next', ctypes.POINTER(DeviceInfo)),
-]
+] + bus_type
 
 hidapi.hid_init.argtypes = []
 hidapi.hid_init.restype = ctypes.c_int
