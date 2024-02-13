@@ -1,5 +1,6 @@
 import os
 import ctypes
+import ctypes.util
 import atexit
 import enum
 
@@ -7,7 +8,7 @@ __all__ = ['HIDException', 'DeviceInfo', 'Device', 'enumerate', 'BusType']
 
 
 hidapi = None
-library_paths = (
+library_names = (
     'libhidapi-hidraw.so',
     'libhidapi-hidraw.so.0',
     'libhidapi-libusb.so',
@@ -19,15 +20,17 @@ library_paths = (
     'libhidapi-0.dll'
 )
 
-for lib in library_paths:
+for libname in library_names:
     try:
-        hidapi = ctypes.cdll.LoadLibrary(lib)
-        break
+        libpath = ctypes.util.find_library(libname)
+        if libpath:
+            hidapi = ctypes.cdll.LoadLibrary(libpath)
+            break
     except OSError:
         pass
 else:
     error = "Unable to load any of the following libraries:{}"\
-        .format(' '.join(library_paths))
+        .format(' '.join(library_names))
     raise ImportError(error)
 
 
