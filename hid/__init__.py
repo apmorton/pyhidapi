@@ -165,7 +165,7 @@ class Device(object):
         elif serial:
             serial = ctypes.create_unicode_buffer(serial)
             self.__dev = hidapi.hid_open(vid, pid, serial)
-        elif vid and pid:
+        elif vid and pid is not None:
             self.__dev = hidapi.hid_open(vid, pid, None)
         else:
             raise ValueError('specify vid/pid or path')
