@@ -130,6 +130,9 @@ hidapi.hid_send_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, cty
 hidapi.hid_send_feature_report.restype = ctypes.c_int
 hidapi.hid_get_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
 hidapi.hid_get_feature_report.restype = ctypes.c_int
+if version >= (0, 14, 0):
+    hidapi.hid_get_report_descriptor.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
+    hidapi.hid_get_report_descriptor.restype = ctypes.c_int
 hidapi.hid_close.argtypes = [ctypes.c_void_p]
 hidapi.hid_close.restype = None
 hidapi.hid_get_manufacturer_string.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_size_t]
@@ -232,6 +235,13 @@ class Device(object):
         size = self.__hidcall(
             hidapi.hid_get_feature_report, self.__dev, data, size)
         return data.raw[:size]
+
+    if version >= (0, 14, 0):
+        def get_report_descriptor(self, size = 4096):
+            data = ctypes.create_string_buffer(size)
+            size = self.__hidcall(
+                hidapi.hid_get_report_descriptor, self.__dev, data, size)
+            return data.raw[:size]
 
     def close(self):
         if self.__dev:
