@@ -236,12 +236,13 @@ class Device(object):
             hidapi.hid_get_feature_report, self.__dev, data, size)
         return data.raw[:size]
 
-    def get_report_descriptor(self, size = 4096):
-        data = ctypes.create_string_buffer(size)
-        size = self.__hidcall(
-            hidapi.hid_get_report_descriptor, self.__dev, data, size)
-        return data.raw[:size]
-    
+    if version >= (0, 14, 0):
+        def get_report_descriptor(self, size = 4096):
+            data = ctypes.create_string_buffer(size)
+            size = self.__hidcall(
+                hidapi.hid_get_report_descriptor, self.__dev, data, size)
+            return data.raw[:size]
+
     def close(self):
         if self.__dev:
             hidapi.hid_close(self.__dev)
