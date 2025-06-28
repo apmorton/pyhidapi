@@ -5,7 +5,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 
 
-version = '1.0.7'
+version = '1.0.8'
 
 setup(
     name='hid',
