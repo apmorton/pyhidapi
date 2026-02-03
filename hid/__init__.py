@@ -174,7 +174,8 @@ class Device(object):
             raise ValueError('specify vid/pid or path')
 
         if not self.__dev:
-            raise HIDException('unable to open device')
+            err = hidapi.hid_error(0)
+            raise HIDException('unable to open device: ' + err)
 
     def __enter__(self):
         return self
