@@ -1,4 +1,5 @@
 import os
+import sys
 import ctypes
 import atexit
 import enum
@@ -146,6 +147,13 @@ hidapi.hid_get_indexed_string.restype = ctypes.c_int
 hidapi.hid_error.argtypes = [ctypes.c_void_p]
 hidapi.hid_error.restype = ctypes.c_wchar_p
 
+if sys.platform == "darwin" and version >= (0, 12, 0):
+    hidapi.hid_darwin_set_open_exclusive.argtypes = [ctypes.c_int]
+    hidapi.hid_darwin_set_open_exclusive.restype = None
+    hidapi.hid_darwin_get_open_exclusive.argtypes = []
+    hidapi.hid_darwin_get_open_exclusive.restype = ctypes.c_int
+    hidapi.hid_darwin_is_device_open_exclusive.argtypes = [ctypes.c_void_p]
+    hidapi.hid_darwin_is_device_open_exclusive.restype = ctypes.c_int
 
 def enumerate(vid=0, pid=0):
     ret = []
@@ -275,3 +283,11 @@ class Device(object):
         self.__hidcall(hidapi.hid_get_indexed_string,
                        self.__dev, index, buf, max_length)
         return buf.value
+
+    @property
+    def exclusive(self):
+        if hasattr(hidapi, "hid_darwin_is_device_open_exclusive"):
+            return self.__hidcall(hidapi.hid_darwin_is_device_open_exclusive,
+                                  self.__dev)
+        else:
+            return False
