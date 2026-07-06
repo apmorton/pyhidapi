@@ -128,6 +128,9 @@ hidapi.hid_set_nonblocking.argtypes = [ctypes.c_void_p, ctypes.c_int]
 hidapi.hid_set_nonblocking.restype = ctypes.c_int
 hidapi.hid_send_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
 hidapi.hid_send_feature_report.restype = ctypes.c_int
+if version >= (0, 15, 0):
+    hidapi.hid_send_output_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
+    hidapi.hid_send_output_report.restype = ctypes.c_int
 hidapi.hid_get_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
 hidapi.hid_get_feature_report.restype = ctypes.c_int
 if version >= (0, 14, 0):
@@ -222,6 +225,10 @@ class Device(object):
         size = self.__hidcall(
             hidapi.hid_get_input_report, self.__dev, data, size)
         return data.raw[:size]
+
+    def send_output_report(self, data):
+        return self.__hidcall(hidapi.hid_send_output_report,
+                              self.__dev, data, len(data))
 
     def send_feature_report(self, data):
         return self.__hidcall(hidapi.hid_send_feature_report,
