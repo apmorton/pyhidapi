@@ -76,6 +76,7 @@ class BusType(enum.Enum):
     BLUETOOTH = 0x02
     I2C = 0x03
     SPI = 0x04
+    VIRTUAL = 0x05 # version >= (0, 16, 0)
 
 class DeviceInfo(ctypes.Structure):
     def as_dict(self):
