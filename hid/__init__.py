@@ -122,18 +122,18 @@ hidapi.hid_read_timeout.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_s
 hidapi.hid_read_timeout.restype = ctypes.c_int
 hidapi.hid_read.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
 hidapi.hid_read.restype = ctypes.c_int
-if version >= (0, 10, 0):
-    hidapi.hid_get_input_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
-    hidapi.hid_get_input_report.restype = ctypes.c_int
 hidapi.hid_set_nonblocking.argtypes = [ctypes.c_void_p, ctypes.c_int]
 hidapi.hid_set_nonblocking.restype = ctypes.c_int
 hidapi.hid_send_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
 hidapi.hid_send_feature_report.restype = ctypes.c_int
 hidapi.hid_get_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
 hidapi.hid_get_feature_report.restype = ctypes.c_int
-if version >= (0, 14, 0):
-    hidapi.hid_get_report_descriptor.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
-    hidapi.hid_get_report_descriptor.restype = ctypes.c_int
+if version >= (0, 15, 0):
+    hidapi.hid_send_output_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
+    hidapi.hid_send_output_report.restype = ctypes.c_int
+if version >= (0, 10, 0):
+    hidapi.hid_get_input_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
+    hidapi.hid_get_input_report.restype = ctypes.c_int
 hidapi.hid_close.argtypes = [ctypes.c_void_p]
 hidapi.hid_close.restype = None
 hidapi.hid_get_manufacturer_string.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_size_t]
@@ -142,8 +142,14 @@ hidapi.hid_get_product_string.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, cty
 hidapi.hid_get_product_string.restype = ctypes.c_int
 hidapi.hid_get_serial_number_string.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p, ctypes.c_size_t]
 hidapi.hid_get_serial_number_string.restype = ctypes.c_int
+if version >= (0, 13, 0):
+    hidapi.hid_get_device_info.argtypes = [ctypes.c_void_p]
+    hidapi.hid_get_device_info.restype = ctypes.POINTER(DeviceInfo)
 hidapi.hid_get_indexed_string.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_wchar_p, ctypes.c_size_t]
 hidapi.hid_get_indexed_string.restype = ctypes.c_int
+if version >= (0, 14, 0):
+    hidapi.hid_get_report_descriptor.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
+    hidapi.hid_get_report_descriptor.restype = ctypes.c_int
 hidapi.hid_error.argtypes = [ctypes.c_void_p]
 hidapi.hid_error.restype = ctypes.c_wchar_p
 
@@ -214,17 +220,6 @@ class Device(object):
 
         return data.raw[:size]
 
-    if version >= (0, 10, 0):
-        def get_input_report(self, report_id, size):
-            data = ctypes.create_string_buffer(size)
-
-            # Pass the id of the report to be read.
-            data[0] = bytearray((report_id,))
-
-            size = self.__hidcall(
-                hidapi.hid_get_input_report, self.__dev, data, size)
-            return data.raw[:size]
-
     def send_feature_report(self, data):
         return self.__hidcall(hidapi.hid_send_feature_report,
                               self.__dev, data, len(data))
@@ -238,6 +233,22 @@ class Device(object):
         size = self.__hidcall(
             hidapi.hid_get_feature_report, self.__dev, data, size)
         return data.raw[:size]
+
+    if version >= (0, 15, 0):
+        def send_output_report(self, data):
+            return self.__hidcall(hidapi.hid_send_output_report,
+                                  self.__dev, data, len(data))
+
+    if version >= (0, 10, 0):
+        def get_input_report(self, report_id, size):
+            data = ctypes.create_string_buffer(size)
+
+            # Pass the id of the report to be read.
+            data[0] = bytearray((report_id,))
+
+            size = self.__hidcall(
+                hidapi.hid_get_input_report, self.__dev, data, size)
+            return data.raw[:size]
 
     if version >= (0, 14, 0):
         def get_report_descriptor(self, size = 4096):
@@ -271,6 +282,12 @@ class Device(object):
     @property
     def serial(self):
         return self.__readstring(hidapi.hid_get_serial_number_string)
+
+    if version >= (0, 13, 0):
+        @property
+        def device_info(self):
+            info = self.__hidcall(hidapi.hid_get_device_info, self.__dev)
+            return info.contents.as_dict()
 
     def get_indexed_string(self, index, max_length=255):
         buf = ctypes.create_unicode_buffer(max_length)
