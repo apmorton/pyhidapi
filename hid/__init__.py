@@ -26,8 +26,8 @@ for lib in library_paths:
     except OSError:
         pass
 else:
-    error = "Unable to load any of the following libraries:{}"\
-        .format(' '.join(library_paths))
+    error = 'Unable to load any of the following libraries: ' + \
+            ' '.join(library_paths)
     raise ImportError(error)
 
 
@@ -252,7 +252,7 @@ class Device(object):
             return data.raw[:size]
 
     if version >= (0, 14, 0):
-        def get_report_descriptor(self, size = 4096):
+        def get_report_descriptor(self, size=4096):
             data = ctypes.create_string_buffer(size)
             size = self.__hidcall(
                 hidapi.hid_get_report_descriptor, self.__dev, data, size)
