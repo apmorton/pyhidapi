@@ -123,6 +123,9 @@ hidapi.hid_read_timeout.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_s
 hidapi.hid_read_timeout.restype = ctypes.c_int
 hidapi.hid_read.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t]
 hidapi.hid_read.restype = ctypes.c_int
+if version >= (0, 15, 0):
+    hidapi.hid_read_error.argtypes = [ctypes.c_void_p]
+    hidapi.hid_read_error.restype = ctypes.c_wchar_p
 hidapi.hid_set_nonblocking.argtypes = [ctypes.c_void_p, ctypes.c_int]
 hidapi.hid_set_nonblocking.restype = ctypes.c_int
 hidapi.hid_send_feature_report.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
@@ -197,9 +200,14 @@ class Device(object):
 
         ret = function(*args, **kwargs)
 
-        if ret == -1:
-            err = hidapi.hid_error(self.__dev)
+        if ((ret == -1) if isinstance(ret, int) else not ret):
+            if (version >= (0, 15, 0) and
+                    function in (hidapi.hid_read, hidapi.hid_read_timeout)):
+                err = hidapi.hid_read_error(self.__dev)
+            else:
+                err = hidapi.hid_error(self.__dev)
             raise HIDException(err)
+
         return ret
 
     def __readstring(self, function, max_length=255):
